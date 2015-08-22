@@ -22,6 +22,8 @@ If this works you know that your Chromecast has been successfully registered as 
 * The screen on the Chromecast TV should go black and have some text as the receiver is loaded
 * Type a message into the input of your Chrome window and hit ENTER
 * You should see that text on the Chromecast TV!
+* Open the developer console on your Chrome browser
+* You should see that the custom receiver is sending you a "Timer" message every two seconds
 
 Thanks to the following site for demo.html code:
 https://github.com/googlecast/CastHelloText-chrome
