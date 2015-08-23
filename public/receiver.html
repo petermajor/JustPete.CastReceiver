@@ -1,75 +1,59 @@
 <html>
 
-<script src="https://www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js">
-</script>
+<script src="https://www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
 <script type="text/javascript">
     var namespace = "urn:x-cast:com.petermajor.justpete";
 
-    function log(str)
-    {
-        console.log(str);
-
-        var newSpan = document.createElement("span");
-        var newContent = document.createTextNode(str);
-        newSpan.appendChild(newContent);
-
-        var root = document.getElementById("root");
-        root.appendChild(newSpan);
-        root.appendChild(document.createElement("br"));
-    }
+    var players = []
 
     function onChannelOpened(event)
     {
-        log("onChannelOpened. Total number of channels: " + window.castReceiverManager.getSenders().length);
+        console.log("onChannelOpened. Total number of channels: " + window.castReceiverManager.getSenders().length);
     }
 
     function onChannelClosed(event)
     {
-        log("onChannelClosed. Total number of channels: " + window.castReceiverManager.getSenders().length);
-        if (window.castReceiverManager.getSenders().length == 0) window.close();
-    }
-
-    function onError()
-    {
-        log("onError");
+        console.log("onChannelClosed. Total number of channels: " + window.castReceiverManager.getSenders().length);
+        if (window.castReceiverManager.getSenders().length == 0) {
+            window.close();
+        }
     }
 
     function onMessage(event)
     {
         var message = event.data;
         var senderId = event.senderId;
-        log("message from: " + senderId + " message: " + message);
+        console.log('onMessage ' + JSON.stringify(event.data));
+
+        if (message.command == 'join') {
+            onJoin(senderId, message);
+        } else {
+            console.log('Invalid message command: ' + message.command);
+        }
+    }
+
+    function onJoin(senderId, message) {
+        console.log('join: ' + senderId);
     }
 
     function onLoad()
 	{
-        log("document loaded");
+        console.log("document loaded");
+
+        cast.receiver.logger.setLevelValue(cast.receiver.LoggerLevel.DEBUG);
 
         window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
 
         window.castReceiverManager.onSenderConnected = onChannelOpened;
         window.castReceiverManager.onSenderDisconnected = onChannelClosed;
 
-        window.customMessageBus = window.castReceiverManager.getCastMessageBus(namespace);
+        window.customMessageBus = window.castReceiverManager.getCastMessageBus(namespace, cast.receiver.CastMessageBus.MessageType.JSON);
         window.customMessageBus.onMessage = onMessage;
-
 
         window.castReceiverManager.start();
 
-        log("cast started");
-
-    	window.setInterval(onTimer, 2000);
+        console.log("cast started");
 	}
-
-	function onTimer()
-	{
-	    broadcast("timer");
-	}
-
-    function broadcast(message)
-    {
-        window.customMessageBus.broadcast(message);
-    }
 
 	window.addEventListener("load", onLoad);
 </script>
