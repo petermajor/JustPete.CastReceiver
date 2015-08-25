@@ -27,6 +27,9 @@
 
         if (message.command == 'join') {
             onJoin(senderId, message);
+        }
+        else if (message.command == 'guess') {
+            onGuess(senderId, message);
         } else {
             console.log('Invalid message command: ' + message.command);
         }
@@ -36,8 +39,12 @@
         console.log('join: ' + senderId);
     }
 
+    function onGuess(senderId, message) {
+        console.log('guess: ' + message.value);
+    }
+
     function onLoad()
-	{
+    {
         console.log("document loaded");
 
         cast.receiver.logger.setLevelValue(cast.receiver.LoggerLevel.DEBUG);
@@ -53,9 +60,9 @@
         window.castReceiverManager.start();
 
         console.log("cast started");
-	}
+    }
 
-	window.addEventListener("load", onLoad);
+    window.addEventListener("load", onLoad);
 </script>
 
 <body>
